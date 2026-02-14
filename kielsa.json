@@ -1,0 +1,11 @@
+{
+  "modo": "Kielsa",
+  "apps": [
+    {
+      "nombre": "Bloc de notas (prueba silent)",
+      "ruta": "notepad.exe",
+      "args": "",
+      "post": "test.reg"
+    }
+  ]
+}

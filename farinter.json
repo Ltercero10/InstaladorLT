@@ -1,0 +1,56 @@
+{
+  "modo": "Farinter",
+  "apps": [
+    {
+      "nombre": "Farinter Agent",
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\Farinter_Agent.exe",
+      "args": "/silent/install",
+      "post": ""
+    },
+    {
+      "nombre": "Google Chrome",
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\ChromeSetup.exe",
+      "args": "/s", 
+      "post": ""
+
+    },
+    {
+    "nombre": "RealVNC",
+    "base": "soporte",
+    "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\RealVNC-Enterprise-5.0.3-Keygen_www.PlusCrack.com\\setup.exe",
+    "args": "/silent /suppressmsgboxes /norestart",
+    "post_cmd": "\"C:\\Program Files\\RealVNC\\VNC Server\\vnclicense.exe\" -add X6HWM-HWM2K-2F3AE-X8AF9-AH9RA"
+    },
+
+    {
+      "nombre": "Output Messenger",  
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\OutputMessengerSetup_64bit (4)\\OutputMessengerSetup_64bit.exe",
+      "args": "/silent /suppressmsgboxes /norestart",
+      "post": ""
+    },
+    {
+      "nombre": "SAP GUI 8.0",
+      "base": "soporte",
+      "ruta": "SAPGUI 800\\SAP_GUI_for_Windows_8.00_Comp._1_\\SAP_GUI_for_Windows_8.00_Comp._1_\\PRES1\\GUI\\Windows\\Win64\\SapGui64Setup.exe",
+      "args": "/silent",
+      "post": ""
+    },
+    {
+      "nombre": "SAP Script Text Editor",
+      "base": "soporte",
+      "ruta": "SAPGUI 800\\SAP_GUI_for_Windows_8.00_Comp._1_\\SAPscript Text editors_64bits.exe",
+      "args": "",
+      "post": ""
+    },
+    {
+      "nombre": "SAP GUI Patch 10",
+      "base": "soporte",
+      "ruta": "SAPGUI 800\\GUI800_patch-10.exe",
+      "args": "",
+      "post": ""
+    }
+  ]
+}

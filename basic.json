@@ -1,0 +1,19 @@
+{
+  "modo": "basic",
+  "apps": [
+    {
+      "nombre": "7-Zip",
+      "base": "apps",
+      "ruta": "soporte\\winrar.exe",
+      "args": "/S",
+      "post": ""
+    },
+    {
+      "nombre": "Google Chrome",
+      "base": "soporte",
+      "ruta": "soporte\\chrome.exe",
+      "args": "/silent /install",
+      "post": "reg\\chrome.reg"
+    }
+  ]
+}
