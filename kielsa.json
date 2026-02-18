@@ -55,6 +55,13 @@
       "args": "",
       "post": "",
       "copiar_a_temp": true
+    },
+    {
+      "nombre": "Farinter Agent",
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\Farinter_Agent.exe",
+      "args": "/silent/install",
+      "post": ""
     }
 
 

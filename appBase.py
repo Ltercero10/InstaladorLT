@@ -11,6 +11,23 @@ import sys
 import ctypes
 
 
+# -----------------------------
+# PyInstaller: rutas de recursos
+# -----------------------------
+def resource_path(relative_path: str) -> str:
+    """
+    Devuelve ruta absoluta tanto en .py como en .exe (PyInstaller --onefile).
+    """
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        base_path = sys._MEIPASS  # carpeta temporal donde PyInstaller extrae
+    else:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, relative_path)
+
+
+# -----------------------------
+# Elevación a Administrador
+# -----------------------------
 def ensure_admin():
     try:
         is_admin = ctypes.windll.shell32.IsUserAnAdmin()
@@ -24,22 +41,35 @@ def ensure_admin():
         sys.exit(0)
 
 
+# -----------------------------
+# UI helpers
+# -----------------------------
 def log(msg: str):
     console.insert(tk.END, msg + "\n")
     console.see(tk.END)
 
 
+# -----------------------------
+# Config/JSON
+# -----------------------------
 def load_config():
-    if not os.path.exists("config.json"):
+    cfg = resource_path("config.json")
+    if not os.path.exists(cfg):
         messagebox.showerror("Error", "No se encontró config.json")
         return None
 
-    with open("config.json", "r", encoding="utf-8") as f:
+    with open(cfg, "r", encoding="utf-8") as f:
         return json.load(f)
 
 
+# -----------------------------
+# Stage installers to TEMP
+# -----------------------------
 def stage_to_temp(src_path: str) -> str:
-    """Copia el instalador desde red (UNC) a %TEMP% y lo desbloquea."""
+    """
+    Copia el instalador desde red (UNC) a %TEMP% y lo desbloquea
+    (Unblock-File) para reducir avisos/Mark-of-the-Web.
+    """
     temp_dir = tempfile.gettempdir()
     base_name = os.path.basename(src_path)
 
@@ -50,7 +80,7 @@ def stage_to_temp(src_path: str) -> str:
 
     shutil.copy2(src_path, dst_path)
 
-    # Desbloquear (Mark-of-the-Web)
+    # Desbloquear Mark-of-the-Web si aplica
     try:
         subprocess.run(
             ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass",
@@ -64,17 +94,21 @@ def stage_to_temp(src_path: str) -> str:
     return dst_path
 
 
-def run_installation(json_file: str):
+# -----------------------------
+# Instalación principal
+# -----------------------------
+def run_installation(json_filename: str):
     try:
-        if not os.path.exists(json_file):
-            messagebox.showerror("Error", f"No se encontró el archivo {json_file}")
-            return
-
         config = load_config()
         if not config:
             return
 
-        with open(json_file, "r", encoding="utf-8") as f:
+        json_path = resource_path(json_filename)
+        if not os.path.exists(json_path):
+            messagebox.showerror("Error", f"No se encontró el archivo {json_filename}")
+            return
+
+        with open(json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         apps = data.get("apps", [])
@@ -91,6 +125,8 @@ def run_installation(json_file: str):
         log(f"Total de aplicaciones: {total_apps}")
         log("Iniciando instalación...\n")
 
+        rutas_base = config.get("rutas_base", {})
+
         for index, app in enumerate(apps, start=1):
             nombre = app.get("nombre", "Desconocido")
             tipo = app.get("tipo", "exe")  # exe | msi | carpeta
@@ -101,17 +137,17 @@ def run_installation(json_file: str):
             post_cmd = app.get("post_cmd", "")
             copiar_a_temp = app.get("copiar_a_temp", True)
 
-            log(f"[{index}/{total_apps}] Instalando: {nombre}")
+            log(f"[{index}/{total_apps}] Procesando: {nombre}")
 
             # Validar base
-            if base not in config.get("rutas_base", {}):
+            if base not in rutas_base:
                 log(f"❌ Base no definida en config.json: {base}\n")
                 progress_var.set(index)
                 root.update_idletasks()
                 continue
 
-            # Construir ruta red
-            ruta = os.path.join(config["rutas_base"][base], ruta_relativa)
+            # Construir ruta real (UNC)
+            ruta = os.path.join(rutas_base[base], ruta_relativa)
             log(f"Ruta (red): {ruta}")
 
             # Verificar acceso a carpeta
@@ -125,7 +161,9 @@ def run_installation(json_file: str):
                 root.update_idletasks()
                 continue
 
-            # =============== TIPO: CARPETA ===============
+            # -----------------------------
+            # TIPO: CARPETA (copiar)
+            # -----------------------------
             if tipo == "carpeta":
                 destino = app.get("destino", "")
                 if not destino:
@@ -157,7 +195,9 @@ def run_installation(json_file: str):
                 root.update_idletasks()
                 continue
 
-            # Validar instalador (exe/msi) exista en red
+            # -----------------------------
+            # TIPO: EXE/MSI (instalación)
+            # -----------------------------
             if not os.path.exists(ruta):
                 log("❌ Instalador no encontrado en red")
                 log("⚠ Se omite esta aplicación\n")
@@ -165,7 +205,6 @@ def run_installation(json_file: str):
                 root.update_idletasks()
                 continue
 
-            # Definir ruta de ejecución
             ruta_ejecucion = ruta
             ruta_local = None
 
@@ -184,11 +223,14 @@ def run_installation(json_file: str):
             else:
                 log("⚠ Ejecutando desde carpeta original (no se copia a TEMP)")
 
-            # Ejecutar instalación (SIN SAP)
+            # Ejecutar instalación
             try:
                 if tipo == "msi":
                     log("Instalando paquete MSI (msiexec)...")
-                    comando = f'msiexec /i "{ruta_ejecucion}" /qn /norestart {args}'.strip()
+                    # Log MSI para diagnóstico
+                    msi_log = os.path.join(tempfile.gettempdir(), f"msi_{nombre.replace(' ', '_')}.log")
+                    comando = f'msiexec /i "{ruta_ejecucion}" /qn /norestart /l*v "{msi_log}" {args}'.strip()
+                    log(f"MSI log: {msi_log}")
                     result = subprocess.run(comando, shell=True)
                     code = result.returncode
                 else:
@@ -218,9 +260,11 @@ def run_installation(json_file: str):
                     except Exception as e:
                         log(f"⚠ No se pudo eliminar el instalador temporal: {e}")
 
+            # -----------------------------
             # Post: .reg
+            # -----------------------------
             if post:
-                reg_path = os.path.abspath(post)
+                reg_path = resource_path(post) if os.path.exists(resource_path(post)) else os.path.abspath(post)
                 if os.path.exists(reg_path):
                     log("Aplicando configuración (.reg)...")
                     subprocess.run(f'reg import "{reg_path}"', shell=True)
@@ -228,7 +272,9 @@ def run_installation(json_file: str):
                 else:
                     log(f"⚠ Archivo .reg no encontrado: {reg_path}")
 
+            # -----------------------------
             # Post: comando
+            # -----------------------------
             if post_cmd:
                 log("Ejecutando comando post-instalación...")
                 try:
@@ -252,14 +298,17 @@ def run_installation(json_file: str):
         messagebox.showerror("Error", str(e))
 
 
-def start(json_file: str):
-    threading.Thread(target=run_installation, args=(json_file,), daemon=True).start()
+def start(json_filename: str):
+    threading.Thread(target=run_installation, args=(json_filename,), daemon=True).start()
 
 
+# -----------------------------
+# MAIN
+# -----------------------------
 ensure_admin()
 
 root = tk.Tk()
-root.title("AutoInstalador")
+root.title("AutoInstaller")
 
 frame = tk.Frame(root)
 frame.pack(padx=20, pady=20)
