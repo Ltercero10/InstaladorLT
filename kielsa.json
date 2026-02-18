@@ -1,11 +1,63 @@
 {
   "modo": "Kielsa",
-  "apps": [
+  "apps": 
+  [
     {
-      "nombre": "Bloc de notas (prueba silent)",
-      "ruta": "notepad.exe",
+    "nombre": "RealVNC",
+    "base": "soporte",
+    "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\RealVNC-Enterprise-5.0.3-Keygen_www.PlusCrack.com\\setup.exe",
+    "args": "/silent /suppressmsgboxes /norestart",
+    "post_cmd": "\"C:\\Program Files\\RealVNC\\VNC Server\\vnclicense.exe\" -add X6HWM-HWM2K-2F3AE-X8AF9-AH9RA"
+    },
+
+    {
+      "nombre": "Output Messenger",  
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\OutputMessengerSetup_64bit (4)\\OutputMessengerSetup_64bit.exe",
+      "args": "/silent /suppressmsgboxes /norestart",
+      "post": ""
+    },
+    {
+    "nombre": "Crystal Reports",
+    "tipo": "msi",
+    "base": "soporte",
+    "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\02 - Crystal Reports\\02 CRRuntime_32bit_13_0_4.msi",
+    "args": "",
+    "post": "",
+    "copiar_a_temp": true
+    },
+    {
+      "nombre": "Silverlight",
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\03 - Silvertlight\\Silverlight.exe",
+      "args": "/q /norestart",
+      "post": ""
+    },
+    {
+      "nombre": "Libreria Excel",  
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\08 - Libreria Excel\\AccessDatabaseEngine.exe",
+      "args": "/quiet /norestart",
+      "post": ""
+    },
+    {
+    "nombre": "Copiar Cargas Ficohsa",
+    "base": "soporte",
+    "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\Cargas Ficohsa",
+    "tipo": "carpeta",
+    "destino": "C:\\Cargas Ficohsa"
+    },
+    {
+      "nombre": "LibreOffice",
+      "tipo": "msi",
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\libre de office\\LibreOffice_7.4.7_Win_x64.msi",
       "args": "",
-      "post": "test.reg"
+      "post": "",
+      "copiar_a_temp": true
     }
+
+
+    
   ]
 }

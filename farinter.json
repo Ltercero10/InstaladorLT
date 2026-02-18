@@ -1,7 +1,7 @@
 {
   "modo": "Farinter",
   "apps": [
-    {
+           {
       "nombre": "Farinter Agent",
       "base": "soporte",
       "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\Farinter_Agent.exe",
@@ -12,8 +12,8 @@
       "nombre": "Google Chrome",
       "base": "soporte",
       "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\ChromeSetup.exe",
-      "args": "/s", 
-      "post": ""
+      "args": "/silent /install", 
+      "copiar_a_temp":false
 
     },
     {
@@ -35,22 +35,25 @@
       "nombre": "SAP GUI 8.0",
       "base": "soporte",
       "ruta": "SAPGUI 800\\SAP_GUI_for_Windows_8.00_Comp._1_\\SAP_GUI_for_Windows_8.00_Comp._1_\\PRES1\\GUI\\Windows\\Win64\\SapGui64Setup.exe",
-      "args": "/silent",
-      "post": ""
+      "args": "/silent /suppressmsgboxes /norestart",
+      "post": "",
+      "copiar_a_temp": false
     },
     {
       "nombre": "SAP Script Text Editor",
       "base": "soporte",
       "ruta": "SAPGUI 800\\SAP_GUI_for_Windows_8.00_Comp._1_\\SAPscript Text editors_64bits.exe",
       "args": "",
-      "post": ""
+      "post": "",
+      "copiar_a_temp": false
     },
     {
       "nombre": "SAP GUI Patch 10",
       "base": "soporte",
       "ruta": "SAPGUI 800\\GUI800_patch-10.exe",
       "args": "",
-      "post": ""
+      "post": "",
+      "copiar_a_temp": false
     }
   ]
 }
