@@ -1,0 +1,37 @@
+{
+  "modo": "Catálogo general",
+  "apps": [
+    {
+      "nombre": "Google Chrome",
+      "tipo": "exe",
+      "base": "instaladores",
+      "ruta": "Basicas/ChromeSetup.exe",
+      "args": "/silent /install",
+      "copiar_a_temp": true
+    },
+    {
+      "nombre": "7-Zip",
+      "tipo": "msi",
+      "base": "instaladores",
+      "ruta": "Basicas/7zip.msi",
+      "args": "",
+      "copiar_a_temp": true
+    },
+    {
+      "nombre": "Adobe Reader",
+      "tipo": "exe",
+      "base": "instaladores",
+      "ruta": "Basicas/ReaderSetup.exe",
+      "args": "/sAll",
+      "copiar_a_temp": true
+    },
+    {
+      "nombre": "AnyDesk",
+      "tipo": "exe",
+      "base": "instaladores",
+      "ruta": "Basicas/AnyDesk.exe",
+      "args": "--install \"C:\\Program Files (x86)\\AnyDesk\" --start-with-win --silent",
+      "copiar_a_temp": true
+    }
+  ]
+}
