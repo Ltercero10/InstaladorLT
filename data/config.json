@@ -1,0 +1,13 @@
+{
+  "app_name": "AutoInstaller",
+  "version": "1.0",
+
+  "rutas_base": {
+    "soporte": "\\\\10.0.5.157\\Soporte"
+  },
+
+  "logs": {
+    "enabled": true,
+    "folder": "logs"
+  }
+}
