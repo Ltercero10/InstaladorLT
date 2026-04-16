@@ -1,7 +1,10 @@
 import subprocess
 from pathlib import Path
 from tkinter import messagebox
+
 from gui.login_dialog import NetworkLoginDialog
+
+
 def disconnect_share(share_path: str):
     """
     Desconecta una ruta de red específica si ya existe una sesión previa.
@@ -20,6 +23,7 @@ def disconnect_share(share_path: str):
 def disconnect_server_connections(server_host: str):
     """
     Desconecta conexiones previas al servidor para evitar error 1219.
+    Ejemplo de server_host: \\\\10.0.5.157
     """
     try:
         result = subprocess.run(
@@ -37,7 +41,6 @@ def disconnect_server_connections(server_host: str):
             if not line:
                 continue
 
-            # Buscar recursos UNC activos que apunten al mismo host
             if server_host.lower() in line.lower():
                 parts = line.split()
                 unc_targets = [p for p in parts if p.startswith("\\\\")]
@@ -59,6 +62,7 @@ def disconnect_server_connections(server_host: str):
 def connect_to_share(share_path: str, username: str, password: str, domain: str = ""):
     """
     Conecta a un recurso compartido SMB usando credenciales.
+    Retorna: (success: bool, message: str)
     """
     full_user = f"{domain}\\{username}" if domain else username
 
@@ -94,6 +98,14 @@ def verify_share_access(share_path: str):
 
 
 def ensure_network_access(root, share_path: str):
+    """
+    Si la compartida ya es accesible, no muestra login.
+    Si no lo es, muestra login y autentica.
+    """
+    # 1. Si ya hay acceso, no pedir login
+    if verify_share_access(share_path):
+        return True
+
     dialog = NetworkLoginDialog(root, default_share=share_path)
     root.wait_window(dialog)
 
@@ -114,7 +126,7 @@ def ensure_network_access(root, share_path: str):
     except Exception:
         server_host = ""
 
-    # Limpiar conexiones previas
+    # 2. Limpiar conexiones previas antes de conectar, para evitar 1219
     if server_host:
         disconnect_server_connections(server_host)
 
@@ -125,6 +137,7 @@ def ensure_network_access(root, share_path: str):
         messagebox.showerror("Error de autenticación", msg)
         return False
 
+    # 3. Verificar acceso final
     if not verify_share_access(share):
         messagebox.showerror(
             "Error",

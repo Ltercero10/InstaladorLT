@@ -107,55 +107,64 @@ class Installer:
         if "progress_append_log" in self.callbacks:
             self.callbacks["progress_append_log"](f"Iniciando instalación de {nombre}", "info")
 
+        if "progress_start_activity" in self.callbacks:
+            self.callbacks["progress_start_activity"]()
+
         logger.log(f"[{index}/{total_apps}] Procesando: {nombre}")
 
-        if tipo == "special":
-            return self._process_special_app(app, rutas_base)
+        try:
+            if tipo == "special":
+                result = self._process_special_app(app, rutas_base)
 
-        if app.get("requiere_pais"):
-            result = self._process_country_app(app, rutas_base)
-        else:
-            base = app.get("base", "")
-            ruta_relativa = app.get("ruta", "")
-            args = app.get("args", "")
-            post = app.get("post", "")
-            post_cmd = app.get("post_cmd", "")
-            copiar_a_temp = app.get("copiar_a_temp", True)
+            elif app.get("requiere_pais"):
+                result = self._process_country_app(app, rutas_base)
 
-            if tipo in ["carpeta", "copy_folder"]:
-                ruta = self._build_path(base, ruta_relativa, rutas_base)
-                if not ruta:
-                    result = "skipped"
-                else:
-                    logger.log(f"Ruta origen: {ruta}")
-
-                    if not self._check_source_access(ruta):
-                        result = "skipped"
-                    else:
-                        result = self._install_folder(app, ruta)
             else:
-                ruta = self._build_path(base, ruta_relativa, rutas_base)
-                if not ruta:
-                    result = "skipped"
-                else:
-                    logger.log(f"Ruta de red: {ruta}")
+                base = app.get("base", "")
+                ruta_relativa = app.get("ruta", "")
+                args = app.get("args", "")
+                post = app.get("post", "")
+                post_cmd = app.get("post_cmd", "")
+                copiar_a_temp = app.get("copiar_a_temp", True)
 
-                    if not self._check_source_access(ruta):
+                if tipo in ["carpeta", "copy_folder"]:
+                    ruta = self._build_path(base, ruta_relativa, rutas_base)
+                    if not ruta:
                         result = "skipped"
                     else:
-                        result = self._install_executable(
-                            app, ruta, tipo, args, post, post_cmd, copiar_a_temp
-                        )
+                        logger.log(f"Ruta origen: {ruta}")
 
-        if "progress_append_log" in self.callbacks:
-            if result == "success":
-                self.callbacks["progress_append_log"](f"{nombre}: instalación completada", "success")
-            elif result == "failed":
-                self.callbacks["progress_append_log"](f"{nombre}: instalación fallida", "error")
-            elif result == "skipped":
-                self.callbacks["progress_append_log"](f"{nombre}: instalación omitida", "normal")
+                        if not self._check_source_access(ruta):
+                            result = "skipped"
+                        else:
+                            result = self._install_folder(app, ruta)
+                else:
+                    ruta = self._build_path(base, ruta_relativa, rutas_base)
+                    if not ruta:
+                        result = "skipped"
+                    else:
+                        logger.log(f"Ruta de red: {ruta}")
 
-        return result
+                        if not self._check_source_access(ruta):
+                            result = "skipped"
+                        else:
+                            result = self._install_executable(
+                                app, ruta, tipo, args, post, post_cmd, copiar_a_temp
+                            )
+
+            if "progress_append_log" in self.callbacks:
+                if result == "success":
+                    self.callbacks["progress_append_log"](f"{nombre}: instalación completada", "success")
+                elif result == "failed":
+                    self.callbacks["progress_append_log"](f"{nombre}: instalación fallida", "error")
+                elif result == "skipped":
+                    self.callbacks["progress_append_log"](f"{nombre}: instalación omitida", "normal")
+
+            return result
+
+        finally:
+            if "progress_stop_activity" in self.callbacks:
+                self.callbacks["progress_stop_activity"]()
 
     def _process_country_app(self, app, rutas_base):
         """Procesa aplicaciones que requieren uno o varios países"""
@@ -647,6 +656,10 @@ class Installer:
             return self._install_vnc_with_license(app, rutas_base)
         if handler == "output_messenger":
             return self._install_output_messenger(app, rutas_base)
+        if handler == "sql_express_kielsa":
+            return self._install_sql_express_kielsa(app, rutas_base)
+        if handler == "ssms_silent":
+            return self._install_ssms_silent(app, rutas_base)
 
         logger.log(f"Handler especial no soportado: {handler}")
         logger.log("")
@@ -748,6 +761,119 @@ class Installer:
             "",
             copiar_a_temp
         )
+    
+    def _install_sql_express_kielsa(self, app, rutas_base):
+        base = app.get("base", "")
+        ruta_relativa = app.get("ruta", "")
+        copiar_a_temp = app.get("copiar_a_temp", True)
+
+        ruta = self._build_path(base, ruta_relativa, rutas_base)
+        if not ruta:
+            return "skipped"
+
+        logger.log(f"Ruta de SQL Express: {ruta}")
+
+        if not self._check_source_access(ruta):
+            return "skipped"
+
+        ruta_ejecucion = ruta
+        ruta_local = None
+
+        if copiar_a_temp:
+            try:
+                logger.log("Copiando instalador SQL Express a carpeta temporal...")
+                ruta_local = stage_to_temp(ruta)
+                ruta_ejecucion = ruta_local
+                logger.log(f"Ruta local SQL Express: {ruta_local}")
+            except Exception as e:
+                logger.log(f"Error al copiar SQL Express a TEMP: {e}")
+                logger.log("")
+                return "failed"
+
+        comando = (
+            f'"{ruta_ejecucion}" '
+            '/Q /ACTION=Install /FEATURES=SQLEngine '
+            '/INSTANCENAME=SQLEXPRESS '
+            '/SQLCOLLATION=SQL_Latin1_General_CP1_CI_AS '
+            '/SECURITYMODE=SQL '
+            '/SAPWD="FARMACIA" '
+            '/ADDCURRENTUSERASSQLADMIN '
+            '/IACCEPTSQLSERVERLICENSETERMS'
+        )
+
+        try:
+            logger.log("Iniciando instalación silenciosa de SQL Server Express...")
+            result = subprocess.run(comando, shell=True)
+
+            if result.returncode in (0, 1641, 3010):
+                logger.log("SQL Server Express instalado correctamente.")
+                logger.log("")
+                self._cleanup_temp(ruta_local)
+                return "success"
+
+            logger.log(f"La instalación de SQL Express finalizó con código {result.returncode}")
+            logger.log("")
+            self._cleanup_temp(ruta_local)
+            return "failed"
+
+        except Exception as e:
+            logger.log(f"Error instalando SQL Express: {e}")
+            logger.log("")
+            self._cleanup_temp(ruta_local)
+            return "failed"
+        
+    def _install_ssms_silent(self, app, rutas_base):
+        base = app.get("base", "")
+        ruta_relativa = app.get("ruta", "")
+        copiar_a_temp = app.get("copiar_a_temp", True)
+
+        ruta = self._build_path(base, ruta_relativa, rutas_base)
+        if not ruta:
+            return "skipped"
+
+        logger.log(f"Ruta de SSMS: {ruta}")
+
+        if not self._check_source_access(ruta):
+            return "skipped"
+
+        ruta_ejecucion = ruta
+        ruta_local = None
+
+        if copiar_a_temp:
+            try:
+                logger.log("Copiando instalador SSMS a carpeta temporal...")
+                ruta_local = stage_to_temp(ruta)
+                ruta_ejecucion = ruta_local
+                logger.log(f"Ruta local SSMS: {ruta_local}")
+            except Exception as e:
+                logger.log(f"Error al copiar SSMS a TEMP: {e}")
+                logger.log("")
+                return "failed"
+
+        comando = f'"{ruta_ejecucion}" --quiet --norestart'
+
+        try:
+            logger.log("Iniciando instalación silenciosa de SSMS...")
+            result = subprocess.run(comando, shell=True)
+
+            if result.returncode in (0, 1641, 3010):
+                logger.log("SSMS instalado correctamente.")
+                logger.log("")
+                self._cleanup_temp(ruta_local)
+                return "success"
+
+            logger.log(f"La instalación de SSMS finalizó con código {result.returncode}")
+            logger.log("")
+            self._cleanup_temp(ruta_local)
+            return "failed"
+
+        except Exception as e:
+            logger.log(f"Error instalando SSMS: {e}")
+            logger.log("")
+            self._cleanup_temp(ruta_local)
+            return "failed"
+
+
     def _detect_installer_engine(self, installer_path):
         """
         Intenta detectar el motor del instalador leyendo strings del binario.

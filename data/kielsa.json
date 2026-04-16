@@ -62,9 +62,24 @@
       "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\Farinter_Agent.exe",
       "args": "/silent/install",
       "post": ""
+    },
+    {
+      "nombre": "SSMS",
+      "tipo": "special",
+      "categoria": "especial",
+      "special_handler": "ssms_silent",
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\Instaladores SQL\\07 - SQL Express 2019\\SSMS-Setup-ENU.exe",
+      "copiar_a_temp": true
+    },
+    {
+      "nombre": "SQL Server Express 2019",
+      "tipo": "special",
+      "categoria": "especial",
+      "special_handler": "sql_express_kielsa",
+      "base": "soporte",
+      "ruta": "Instaladores OFICINAS\\Instaladores LDCOM\\Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)\\Instaladores SQL\\07 - SQL Express 2019\\SQLEXPR_2019_x64_ENU.exe",
+      "copiar_a_temp": true
     }
-
-
-    
   ]
 }

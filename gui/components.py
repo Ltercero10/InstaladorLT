@@ -215,7 +215,18 @@ class InstallProgressDialog(tk.Toplevel):
         self.status_var.set(text)
         self.update_idletasks()
 
+    def start_activity(self):
+        self.progress.configure(mode="indeterminate")
+        self.progress.start(10)
+        self.update_idletasks()
+
+    def stop_activity(self):
+        self.progress.stop()
+        self.progress.configure(mode="determinate")
+        self.update_idletasks()
+
     def set_progress(self, value, total=None):
+        self.progress.configure(mode="determinate")
         if total and total > 0:
             percent = int((value / total) * 100)
         else:

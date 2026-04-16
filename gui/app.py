@@ -70,6 +70,8 @@ class AutoInstallerApp:
             'progress_set_status': self.progress_set_status,
             'progress_append_log': self.progress_append_log,
             'progress_set_value': self.progress_set_value,
+            'progress_start_activity': self.progress_start_activity,
+            'progress_stop_activity': self.progress_stop_activity,
         }
         
         self.installer = Installer(installer_callbacks)
@@ -102,6 +104,14 @@ class AutoInstallerApp:
     def progress_set_value(self, value, total=None):
         if self.progress_dialog and self.progress_dialog.winfo_exists():
             self.root.after(0, lambda: self.progress_dialog.set_progress(value, total))
+
+    def progress_start_activity(self):
+        if self.progress_dialog and self.progress_dialog.winfo_exists():
+            self.root.after(0, self.progress_dialog.start_activity)
+
+    def progress_stop_activity(self):
+        if self.progress_dialog and self.progress_dialog.winfo_exists():
+            self.root.after(0, self.progress_dialog.stop_activity)
 
     def render_apps(self):
         """Reconstruye la lista de aplicaciones en checkboxes."""

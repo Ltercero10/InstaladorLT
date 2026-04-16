@@ -12,7 +12,7 @@ from urllib.request import Request, urlopen
 from tkinter import messagebox
 
 APP_NAME = "Configurador Farinter"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.0.1"
 GITHUB_OWNER = "Ltercero10"
 GITHUB_REPO = "ConfiguradorFarinter"
 ASSET_NAME = "ConfiguradorFarinter.exe"

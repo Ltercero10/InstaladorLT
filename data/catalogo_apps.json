@@ -102,6 +102,15 @@
       "ruta": "//10.0.5.157/Soporte/Instaladores OFICINAS/Instaladores LDCOM/Utilitarios (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN LOS EQUIPOS PRINCIPALMENTE LA CARPETA DE VPN-TIENE CREDENCIALES)/VPN (FAVOR NO DEJAR COPIADOS ESTOS ARCHIVOS EN EQUIPOS)/WG-MVPN-SSL_12_11_2.exe",
       "args": "",
       "copiar_a_temp": true
+    },
+    {
+      "nombre": "App innecesarias",
+      "tipo": "exe",
+      "base": "soporte",
+      "categoria": "basica",
+      "ruta": "//10.0.5.157/Soporte/5.apps innecesarias instaladas.exe",
+      "args": "",
+      "copiar_a_temp": true
     }
   ]
 }
