@@ -32,7 +32,7 @@ class AutoInstallerApp:
         except Exception as e:
             print(f"No se pudo cargar el icono: {e}")
 
-        self.root.title("AutoInstaller Farinter Corporativo")
+        self.root.title("Configurador Farinter Corporativo")
         self.root.geometry("1220x760")
         self.root.minsize(1100, 700)
         self.root.configure(bg="#eef2f7")
