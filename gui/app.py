@@ -143,7 +143,7 @@ class AutoInstallerApp:
 
             if selected:
                 if app_data.get("requiere_pais"):
-                    paises = self.app_country_vars.get(app_name, {})
+                    paises = getattr(self, "app_country_vars", {}).get(app_name, {})
                     if any(var.get() for var in paises.values()):
                         total += 1
                 else:
@@ -152,11 +152,7 @@ class AutoInstallerApp:
         if self.selected_count_label is not None:
             self.selected_count_label.config(text=f"Aplicaciones seleccionadas: {total}")
 
-        if self.btn_run is not None:
-            if total == 0:
-                self.btn_run.config(state="disabled", bg="#9ca3af", cursor="arrow")
-            else:
-                self.btn_run.config(state="normal", bg="#2563eb", cursor="hand2")
+        self.refresh_run_button_state(selected_total=total)
 
     def open_add_app_dialog(self):
         from gui.components import AppFormDialog
@@ -531,6 +527,20 @@ class AutoInstallerApp:
         self.catalog.add_app(app_data)
         self.show_applications()
         messagebox.showinfo("Éxito", "Aplicación agregada correctamente.")
+
+    def refresh_run_button_state(self, selected_total=0):
+            """
+            Habilita o deshabilita el botón Ejecutar según:
+            - apps cargadas por perfil
+            - o selección manual válida
+            """
+            has_profile_apps = bool(self.current_apps)
+            has_manual_selection = selected_total > 0
+
+            if has_profile_apps or has_manual_selection:
+                self.btn_run.config(state="normal", bg="#2563eb", cursor="hand2")
+            else:
+                self.btn_run.config(state="disabled", bg="#9ca3af", cursor="arrow")
 
     def show_home(self):
         show_home(self)

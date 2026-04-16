@@ -69,9 +69,9 @@ def show_profiles(app):
     """Muestra la pantalla de perfiles predefinidos"""
     app.set_active_menu(app.btn_menu_perfiles)
     app.clear_content()
-    app.current_apps = []
-    app.current_mode_name = ""
-
+    #app.current_apps = []
+    #app.current_mode_name = ""
+    #app.refresh_run_button_state()  
     tk.Label(
         app.content_area,
         text="Perfiles predefinidos",
@@ -96,8 +96,11 @@ def show_profiles(app):
             data = load_json_file(filename)
             app.current_apps = data.get("apps", [])
             app.current_mode_name = data.get("modo", "Perfil")
-            selected_label.config(text=f"Selección actual: {app.current_mode_name} ({len(app.current_apps)} aplicaciones)")
+            selected_label.config(
+                text=f"Selección actual: {app.current_mode_name} ({len(app.current_apps)} aplicaciones)"
+            )
             app.set_status(f"Perfil seleccionado: {app.current_mode_name}")
+            app.refresh_run_button_state()
         except Exception as e:
             messagebox.showerror("Error", str(e))
 

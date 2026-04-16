@@ -10,9 +10,6 @@ from core.network_auth import ensure_network_access
 from gui.app import AutoInstallerApp
 from version.github_updater import check_and_update
 
-updated = check_and_update()
-if updated:
-    sys.exit(0)
 
 
 def main():
@@ -28,6 +25,10 @@ def main():
 
     share_root = r"\\10.0.5.157\Soporte"
     ok = ensure_network_access(app.root, share_root)
+
+    updated = check_and_update()
+    if updated:
+        sys.exit(0)
 
     if not ok:
         app.root.destroy()
