@@ -20,7 +20,6 @@ def disconnect_share(share_path: str):
 def disconnect_server_connections(server_host: str):
     """
     Desconecta conexiones previas al servidor para evitar error 1219.
-    Ejemplo de server_host: \\\\10.0.5.157
     """
     try:
         result = subprocess.run(
@@ -60,7 +59,6 @@ def disconnect_server_connections(server_host: str):
 def connect_to_share(share_path: str, username: str, password: str, domain: str = ""):
     """
     Conecta a un recurso compartido SMB usando credenciales.
-    Retorna: (success: bool, message: str)
     """
     full_user = f"{domain}\\{username}" if domain else username
 
@@ -107,7 +105,6 @@ def ensure_network_access(root, share_path: str):
     username = dialog.result["username"]
     password = dialog.result["password"]
 
-    # Ejemplo: de \\10.0.5.157\Soporte sacar \\10.0.5.157
     server_host = ""
     try:
         if share.startswith("\\\\"):

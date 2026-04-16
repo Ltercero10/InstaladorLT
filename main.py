@@ -8,6 +8,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from core.admin import ensure_admin
 from core.network_auth import ensure_network_access
 from gui.app import AutoInstallerApp
+from version.github_updater import check_and_update
+
+updated = check_and_update()
+if updated:
+    sys.exit(0)
 
 
 def main():

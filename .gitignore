@@ -1,0 +1,7 @@
+# Carpetas de compilación (PyInstaller)
+build/
+dist/
+*.spec
+
+# Archivos temporales de Python (recursivo)
+**/__pycache__/
