@@ -6,6 +6,7 @@ from core.catalog_manager import CatalogManager
 from core.logger import Logger, global_logger
 from core.installer import Installer
 from gui.components import create_menu_button, InstallProgressDialog
+from version.github_updater import APP_VERSION
 from gui.views import (
     show_home,
     show_profiles,
@@ -341,6 +342,14 @@ class AutoInstallerApp:
 
         self.btn_menu_acerca = create_menu_button(self.sidebar, "Acerca de", self.show_about)
         self.btn_menu_acerca.pack(fill="x")
+
+        tk.Label(
+        self.sidebar,
+        text=f"Versión {APP_VERSION}",
+        bg="#1f2937",
+        fg="#9ca3af",
+        font=("Segoe UI", 9, "bold")
+        ).pack(side="bottom", pady=(0, 15))
 
         self.menu_buttons = [
             self.btn_menu_inicio, self.btn_menu_perfiles,
