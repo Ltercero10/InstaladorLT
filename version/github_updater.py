@@ -72,26 +72,30 @@ def download_asset_from_api(asset_api_url: str, output_path: str):
         shutil.copyfileobj(response, f)
 
 
-def build_update_bat(current_exe: str, new_exe: str):
-    exe_name = os.path.basename(current_exe)
+def build_update_bat(current_exe: str, new_exe: str, current_pid: int):
+    current_dir = os.path.dirname(current_exe)
+
     return f"""@echo off
 title Actualizando {APP_NAME}
-timeout /t 2 /nobreak >nul
+timeout /t 3 /nobreak >nul
 
 :waitloop
-tasklist | find /i "{exe_name}" >nul
+tasklist /FI "PID eq {current_pid}" | find "{current_pid}" >nul
 if not errorlevel 1 (
     timeout /t 1 /nobreak >nul
     goto waitloop
 )
 
+timeout /t 2 /nobreak >nul
+
 copy /y "{new_exe}" "{current_exe}" >nul
+
+cd /d "{current_dir}"
 start "" "{current_exe}"
 
 timeout /t 2 /nobreak >nul
 del "%~f0"
 """
-
 
 def check_and_update(parent=None):
     hidden_root = None
@@ -143,13 +147,15 @@ def check_and_update(parent=None):
         download_asset_from_api(asset_api_url, new_exe_path)
 
         with open(bat_path, "w", encoding="utf-8") as f:
-            f.write(build_update_bat(current_exe, new_exe_path))
+            f.write(build_update_bat(current_exe, new_exe_path, os.getpid()))
+
 
         subprocess.Popen(
             ["cmd", "/c", bat_path],
             creationflags=subprocess.CREATE_NO_WINDOW
         )
-        return True
+
+        os._exit(0)
 
     except Exception as e:
         messagebox.showerror(
