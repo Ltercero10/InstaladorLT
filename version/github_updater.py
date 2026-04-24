@@ -1,5 +1,3 @@
-# version/github_updater.py
-# -*- coding: utf-8 -*-
 
 import os
 import re
@@ -12,7 +10,7 @@ from urllib.request import Request, urlopen
 from tkinter import Tk, messagebox
 
 APP_NAME = "Configurador Farinter"
-APP_VERSION = "1.0.2"
+APP_VERSION = "1.0.3"
 GITHUB_OWNER = "Ltercero10"
 GITHUB_REPO = "ConfiguradorFarinter"
 ASSET_NAME = "ConfiguradorFarinter.exe"
