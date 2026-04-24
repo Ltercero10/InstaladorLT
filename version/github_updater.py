@@ -1,5 +1,3 @@
-# version/github_updater.py
-# -*- coding: utf-8 -*-
 
 import os
 import re
